@@ -2,22 +2,26 @@ import os
 import serial
 import readchar
 import msvcrt # Windows only, for now
+import csv
 ser = serial.Serial("COM3",9600)
 isRecording = False
-letter = '?'
+letter = '='
 if os.name == 'nt':
     os.system('cls')
 else:
     os.system('clear')
-
+if not os.path.exists('data'):
+    os.makedirs('data')
 def keypress_check():
     global isRecording
     global letter
     if msvcrt.kbhit():
-        if bytes.decode(msvcrt.getch()) == '1':
+        c = bytes.decode(msvcrt.getch())
+        if  c == '1':
             isRecording = not isRecording;
-        if bytes.decode(msvcrt.getch()).isalpha():
-            letter = bytes.decode(msvcrt.getch()).upper()
+        elif c.isalpha():
+            letter = c.upper()
+
 # Colors
 RED = '\033[31m'
 GREEN = '\033[32m'
@@ -30,13 +34,18 @@ RESET = '\033[0m' # reset to the default color
 LINE_UP = '\033[1A'
 CLEAR = "\033[K"
 
-if not os.path.exists('data'):
-    os.makedirs('data')
 
+SAMPLES = 119
+curr = 0
 while True:
     # print('\033[?25l', end="")
     line = ser.readline()
     keypress_check()
+    letter_file_path = os.path.join('data', f'{letter}.csv')
+    if not os.path.exists(letter_file_path):
+        with open(letter_file_path, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['aX', 'aY', 'aZ', 'gX', 'gY', 'gZ', 'r1', 'r2', 'r3', 'r4', 'r5'])
     if line:
         line = line.decode("utf-8").rstrip("\r\n");
         values = line.split(',');
@@ -52,10 +61,19 @@ while True:
         print(f"{CLEAR}Sensor Nine:{values[8]}", end='\n')
         print(f"{CLEAR}Sensor Ten:{values[9]}", end='\n')
         print(f"{CLEAR}Sensor Eleven:{values[10]}", end='\n')
+        if curr == SAMPLES:
+            curr = 0
+            isRecording = False
         if not isRecording:
             print(f"{CLEAR}{GREEN}[1] start recording{RESET}", end='')
         else:
             print(f"{CLEAR}{RED}[1] stop recording{RESET}", end='')
-        print(f"\t\tCurrent Letter:{BLUE}{letter}{RESET}", end = "\n")
+            curr += 1
+            with open(letter_file_path, 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(values)
 
-        print(LINE_UP*8, end='')
+
+        print(f"\t\tCurrent Letter:{YELLOW}{letter}{RESET}", end = "\n")
+
+        print(LINE_UP*13, end='')

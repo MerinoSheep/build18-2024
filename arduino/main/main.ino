@@ -1,5 +1,8 @@
 #include <MPU6050.h>
 
+MPU6050 mpu;
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -9,8 +12,8 @@ void setup() {
   pinMode(A3, INPUT);
   pinMode(A4, INPUT);
 
+
 }
-int i = 0;
 void loop() {
   // put your main code here, to run repeatedly:
   // Change names to actual
@@ -19,10 +22,9 @@ void loop() {
   int sensor2 = analogRead(A2);
   int sensor3 = analogRead(A3);
   int sensor4 = analogRead(A4);
-
+  getMotion6(ax,ay,az,gx,gy,gz);
   char buffer[40];
   sprintf(buffer,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",sensor0,sensor1,sensor2,sensor3,sensor4);
   Serial.println(buffer);
-  i++;
   delay(500);
 }
