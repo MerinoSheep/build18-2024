@@ -3,7 +3,7 @@ import serial
 import readchar
 import msvcrt # Windows only, for now
 import csv
-ser = serial.Serial("COM3",9600)
+ser = serial.Serial("COM4",9600)
 isRecording = False
 letter = '='
 if os.name == 'nt':
@@ -35,7 +35,7 @@ LINE_UP = '\033[1A'
 CLEAR = "\033[K"
 
 
-SAMPLES = 119
+SAMPLES = 100
 curr = 0
 while True:
     # print('\033[?25l', end="")
@@ -45,7 +45,7 @@ while True:
     if not os.path.exists(letter_file_path):
         with open(letter_file_path, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['aX', 'aY', 'aZ', 'gX', 'gY', 'gZ', 'r1', 'r2', 'r3', 'r4', 'r5'])
+            writer.writerow(['aX', 'aY', 'aZ', 'gX', 'gY', 'gZ', 'r1', 'r2', 'r3', 'r4'])
     if line:
         line = line.decode("utf-8").rstrip("\r\n");
         values = line.split(',');
@@ -60,7 +60,7 @@ while True:
         print(f"{CLEAR}Sensor Eight:{values[7]}", end='\n')
         print(f"{CLEAR}Sensor Nine:{values[8]}", end='\n')
         print(f"{CLEAR}Sensor Ten:{values[9]}", end='\n')
-        print(f"{CLEAR}Sensor Eleven:{values[10]}", end='\n')
+        # print(f"{CLEAR}Sensor Eleven:{values[10]}", end='\n')
         if curr == SAMPLES:
             curr = 0
             isRecording = False
