@@ -5,6 +5,34 @@ import tensorflow as tf
 from tensorflow import keras
 import msvcrt # Windows only, for now
 
+GESTURES = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z"
+]
 
 ser = serial.Serial("COM4",9600)
 print(tf.version.VERSION)
@@ -30,4 +58,4 @@ while True:
         arr[i+8] = values[8]
         arr[i+9] = values[9]
 
-    print(model.predict(arr))
+    result = model.predict(arr)
