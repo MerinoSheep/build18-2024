@@ -5,10 +5,11 @@ MPU6050 mpu;
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 const int MPU_ADDR=0x68;
-
+char ssid[] = SECRET_SSID; 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  // start scanning for peripherals
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
@@ -19,6 +20,7 @@ void setup() {
   mpu.initialize();
   mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
   mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
+  // WiFi.begin(ssid);
 }
 // AX: -156, AY: -228, AZ: 16496, GX: -3952, GY: 48,GZ: -16
 // AX: -288, AY: 64, AZ: 16268, GX: -3984, GY: -14,GZ: -13
@@ -46,3 +48,4 @@ void loop() {
   Serial.println(buffer);
   delay(10);
 }
+
