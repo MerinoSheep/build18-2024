@@ -40,7 +40,7 @@ ser = serial.Serial("COM4",9600)
 print(tf.version.VERSION)
 
 print("Loading model...")
-model = tf.keras.models.load_model("my_model.tf")
+model = tf.keras.models.load_model("my_model.h5")
 print("Model loaded!")
 arr = np.zeros((1,1000))
 
