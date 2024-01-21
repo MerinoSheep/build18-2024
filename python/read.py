@@ -73,4 +73,6 @@ while True:
         isRecording = False
         df = pd.DataFrame(arr,index=None)
         df.to_csv(os.path.join('data', f'{letter}.csv'), mode='a', header=False,index=False)
+        ser.reset_input_buffer()
+
     print(LINE_UP,end='')
