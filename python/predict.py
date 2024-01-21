@@ -5,6 +5,7 @@ import tensorflow as tf
 from tensorflow import keras
 import msvcrt # Windows only, for now
 import time
+import pyfiglet
 
 GESTURES = [
     "A",
@@ -39,24 +40,24 @@ ser = serial.Serial("COM4",9600)
 print(tf.version.VERSION)
 
 print("Loading model...")
-model = tf.keras.models.load_model("my_model.keras")
+model = tf.keras.models.load_model("my_model.tf")
 print("Model loaded!")
 arr = np.zeros((1,1000))
 
 while True:
     print("Waiting for keypress...")
+    ser.readline()
     msvcrt.getch()
     print("Keypress detected!")
     ser.reset_input_buffer()
     for i in range(100):
         line = ser.readline()
         if not line:
-            print("No line detected!")
             break
         line = line.decode("utf-8").rstrip("\r\n");
         values = line.split(',');
         values = list(map(int, values))
-        print(values)
+        # print(values)
         #ax, ay, az, gx, gy, gz, r1, r2, r3, r4 from arduino
         arr[0][i*10+0] = (values[0]/8192+4) / 8
         arr[0][i*10+1] = (values[1]/8192+4) / 8
@@ -70,7 +71,10 @@ while True:
         arr[0][i*10+9] = values[9] / 1023
         # for j in range(10):  # Assuming values has 10 elements
         #     arr[0, i*10+j] = values[j]
-    print(np.round(arr, 2))
+    # print(np.round(arr, 2))
     result = model.predict(arr)
     # print(result)
-    print(GESTURES[np.argmax(result)])
+    letter = GESTURES[np.argmax(result)]
+    print(pyfiglet.figlet_format(letter))
+    ser.write(letter.encode())
+
